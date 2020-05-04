@@ -3,7 +3,9 @@ package org.formacio.mvc;
 import org.formacio.repositori.AgendaService;
 import org.formacio.repositori.Persona;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +30,12 @@ public class Controlador {
 	}
 	
 	@RequestMapping(path = "/contacte/{id}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-	@ResponseBody
-	public Persona contacte(@PathVariable String id) {
-		return agenda.recupera(id);
+	public ResponseEntity<Persona> contacte(@PathVariable String id) {
+		Persona persona = agenda.recupera(id);
+		
+		if (persona == null) return new ResponseEntity<Persona>(persona, HttpStatus.NOT_FOUND);
+		
+		return new ResponseEntity<Persona>(persona, HttpStatus.OK);
 	}
 	
 }
